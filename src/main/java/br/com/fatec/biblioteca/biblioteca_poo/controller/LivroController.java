@@ -56,7 +56,7 @@ public class LivroController {
 
         if (query != null && !query.trim().isEmpty()) {
             // Se tem uma query, busca por ela
-            listaLivros = acervoService.buscarPorTitulo(query);
+            listaLivros = acervoService.buscarAcervo(query);
         } else {
             // Se não tem query, lista todos
             listaLivros = acervoService.listarTodos();

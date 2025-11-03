@@ -1,14 +1,16 @@
 package br.com.fatec.biblioteca.biblioteca_poo.config;
 
 import br.com.fatec.biblioteca.biblioteca_poo.model.entity.Bibliotecario;
-import br.com.fatec.biblioteca.biblioteca_poo.model.entity.LivroFisico; // Importar
+import br.com.fatec.biblioteca.biblioteca_poo.model.entity.Cliente;
+import br.com.fatec.biblioteca.biblioteca_poo.model.entity.LivroFisico;
 import br.com.fatec.biblioteca.biblioteca_poo.model.repository.BibliotecarioRepository;
-import br.com.fatec.biblioteca.biblioteca_poo.model.repository.ItemAcervoRepository; // Importar
+import br.com.fatec.biblioteca.biblioteca_poo.model.repository.ClienteRepository;
+import br.com.fatec.biblioteca.biblioteca_poo.model.repository.ItemAcervoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.List; // Importar
+import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -18,6 +20,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private ItemAcervoRepository itemAcervoRepository;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -31,14 +36,12 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         if (itemAcervoRepository.count() == 0) {
-
             LivroFisico l1 = new LivroFisico();
             l1.setTitulo("1984");
             l1.setAutor("George Orwell");
             l1.setEdicao(1);
             l1.setIsbn("978-8535914849");
             l1.setUrlCapa("https://m.media-amazon.com/images/I/819js3EQwbL._AC_UF1000,1000_QL80_.jpg");
-            l1.setEstaDisponivel(true);
 
             LivroFisico l2 = new LivroFisico();
             l2.setTitulo("O Senhor dos Anéis: A Sociedade do Anel");
@@ -46,7 +49,6 @@ public class DataInitializer implements CommandLineRunner {
             l2.setEdicao(3);
             l2.setIsbn("978-8595084759");
             l2.setUrlCapa("https://m.media-amazon.com/images/I/51w7gK+iOdL.jpg");
-            l2.setEstaDisponivel(true);
 
             LivroFisico l3 = new LivroFisico();
             l3.setTitulo("Admirável Mundo Novo");
@@ -54,7 +56,6 @@ public class DataInitializer implements CommandLineRunner {
             l3.setEdicao(1);
             l3.setIsbn("978-8525056000");
             l3.setUrlCapa("https://m.media-amazon.com/images/I/81r-3VItnNS._AC_UF1000,1000_QL80_.jpg");
-            l3.setEstaDisponivel(true);
 
             LivroFisico l4 = new LivroFisico();
             l4.setTitulo("Fahrenheit 451");
@@ -70,7 +71,6 @@ public class DataInitializer implements CommandLineRunner {
             l5.setEdicao(1);
             l5.setIsbn("978-8501068031");
             l5.setUrlCapa("https://m.media-amazon.com/images/I/81y+KN1nLNL._AC_UF1000,1000_QL80_.jpg");
-            l5.setEstaDisponivel(true);
 
             LivroFisico l6 = new LivroFisico();
             l6.setTitulo("Dom Quixote");
@@ -78,7 +78,6 @@ public class DataInitializer implements CommandLineRunner {
             l6.setEdicao(1);
             l6.setIsbn("978-8520931289");
             l6.setUrlCapa("https://m.media-amazon.com/images/I/81xL2GLehbL._AC_UF1000,1000_QL80_.jpg");
-            l6.setEstaDisponivel(true);
 
             LivroFisico l7 = new LivroFisico();
             l7.setTitulo("A Revolução dos Bichos");
@@ -86,7 +85,6 @@ public class DataInitializer implements CommandLineRunner {
             l7.setEdicao(1);
             l7.setIsbn("978-8535909555");
             l7.setUrlCapa("https://m.media-amazon.com/images/I/91BsZhxCRjL._AC_UF1000,1000_QL80_.jpg");
-            l7.setEstaDisponivel(true);
 
             LivroFisico l8 = new LivroFisico();
             l8.setTitulo("Duna");
@@ -94,7 +92,6 @@ public class DataInitializer implements CommandLineRunner {
             l8.setEdicao(1);
             l8.setIsbn("978-8576574849");
             l8.setUrlCapa("https://m.media-amazon.com/images/I/81d+xg+27xL._AC_UF1000,1000_QL80_.jpg");
-            l8.setEstaDisponivel(true);
 
             LivroFisico l9 = new LivroFisico();
             l9.setTitulo("Cem Anos de Solidão");
@@ -102,7 +99,6 @@ public class DataInitializer implements CommandLineRunner {
             l9.setEdicao(1);
             l9.setIsbn("978-8501012355");
             l9.setUrlCapa("https://m.media-amazon.com/images/I/81L-i8i3n9L._AC_UF1000,1000_QL80_.jpg");
-            l9.setEstaDisponivel(true);
 
             LivroFisico l10 = new LivroFisico();
             l10.setTitulo("Neuromancer");
@@ -110,9 +106,37 @@ public class DataInitializer implements CommandLineRunner {
             l10.setEdicao(1);
             l10.setIsbn("978-8576570919");
             l10.setUrlCapa("https://m.media-amazon.com/images/I/91N-EDLw6kL._AC_UF1000,1000_QL80_.jpg");
-            l10.setEstaDisponivel(true);
 
             itemAcervoRepository.saveAll(List.of(l1, l2, l3, l4, l5, l6, l7, l8, l9, l10));
+        }
+
+        if (clienteRepository.count() == 0) {
+            Cliente c1 = new Cliente();
+            c1.setNome("João da Silva");
+            c1.setEmail("joao.silva@email.com");
+            c1.setTelefone("(11) 98765-4321");
+
+            Cliente c2 = new Cliente();
+            c2.setNome("Maria Oliveira");
+            c2.setEmail("maria.oliveira@email.com");
+            c2.setTelefone("(19) 91234-5678");
+
+            Cliente c3 = new Cliente();
+            c3.setNome("Carlos Pereira");
+            c3.setEmail("carlos.pereira@email.com");
+            c3.setTelefone("(11) 95555-4444");
+
+            Cliente c4 = new Cliente();
+            c4.setNome("Ana Souza");
+            c4.setEmail("ana.souza@email.com");
+            c4.setTelefone("(19) 94321-8765");
+
+            Cliente c5 = new Cliente();
+            c5.setNome("Paulo Ricardo");
+            c5.setEmail("paulo.ricardo@email.com");
+            c5.setTelefone("(11) 91111-2222");
+
+            clienteRepository.saveAll(List.of(c1, c2, c3, c4, c5));
         }
     }
 }

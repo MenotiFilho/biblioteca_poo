@@ -32,7 +32,7 @@ public class AcervoService {
         itemAcervoRepository.deleteById(id);
     }
 
-    public List<ItemAcervo> buscarPorTitulo(String query) {
-        return  itemAcervoRepository.findByTituloContainingIgnoreCase(query);
+    public List<ItemAcervo> buscarAcervo(String query) {
+        return  itemAcervoRepository.buscarPorTituloAutorOuIsbn(query);
     }
 }
