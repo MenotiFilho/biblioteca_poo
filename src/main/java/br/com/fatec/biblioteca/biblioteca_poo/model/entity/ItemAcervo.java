@@ -15,6 +15,10 @@ public abstract class ItemAcervo {
     private boolean estaDisponivel;
     private String urlCapa;
 
+    public ItemAcervo() {
+        this.estaDisponivel = true;
+    }
+
     public Long getId() {
         return id;
     }
