@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(title=~{::title}, content=~{::section})}">
+
+<head>
+    <title>Página Inicial - Biblioteca POO</title>
+</head>
+
+<body>
+<section>
+    <h1 class="text-3xl font-bold mb-4">
+        Interface Principal (Menu)
+    </h1>
+    <p class="mb-6">Bem-vindo ao Sistema de Gerenciamento da Biblioteca.</p>
+
+    <div id="teste-htmx-container" class="mb-6">
+        <button hx-get="/htmx-teste"
+                hx-swap="outerHTML"
+                class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow
+                           hover:bg-blue-700 transition duration-200">
+            Clique para testar o HTMX
+        </button>
+    </div>
+
+
+    <nav>
+        <h2 class="text-2xl font-semibold mb-3">Gerenciamento</h2>
+        <ul class="list-disc list-inside">
+            <li>
+                <a th:href="@{/livros}" class="text-blue-600 hover:underline">
+                    Gerenciar Acervo (Livros)
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/usuarios}" class="text-blue-600 hover:underline">
+                    Gerenciar Usuários (Alunos)
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</section>
+</body>
+</html>
