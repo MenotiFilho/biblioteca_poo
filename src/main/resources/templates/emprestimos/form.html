@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(title=~{::title}, content=~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Realizar Empréstimo</title>
+</head>
+
+<body>
+<section>
+    <h1 class="text-3xl font-bold mb-6">Realizar Empréstimo</h1>
+
+    <form th:action="@{/emprestimos/realizar}" method="POST"
+          class="bg-white p-8 rounded-lg shadow-md space-y-6">
+
+        <div class="border-b pb-4 mb-4">
+            <h2 class="text-lg font-semibold text-gray-700">Livro Selecionado</h2>
+            <p class="text-xl" th:text="${item.titulo}">1984</p>
+            <p class="text-gray-500" th:text="${item.autor}">George Orwell</p>
+
+            <input type="hidden" name="itemId" th:value="${item.id}" />
+        </div>
+
+        <div>
+            <label for="cliente-search" class="block text-sm font-medium text-gray-700">
+                Buscar Cliente (Nome, Email ou Telefone)
+            </label>
+            <input type="search" id="cliente-search" name="query"
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+                   placeholder="Digite para buscar..."
+
+                   hx-get="/emprestimos/buscar-cliente"
+                   hx-trigger="keyup changed delay:500ms"
+                   hx-target="#client-results"
+                   hx-swap="innerHTML"
+                   hx-indicator="#loading-spinner-cliente"
+            />
+            <div id="loading-spinner-cliente" class="htmx-indicator mt-2 text-gray-500">
+                Buscando cliente...
+            </div>
+        </div>
+
+        <div id="client-results" class="max-h-60 overflow-y-auto border rounded-md">
+
+            <div th:fragment="search-results">
+
+                <p th:if="${listaClientes == null}"
+                   class="p-4 text-gray-500 text-center">
+                    Digite acima para buscar um cliente.
+                </p>
+                <p th:if="${listaClientes != null and listaClientes.isEmpty()}"
+                   class="p-4 text-red-500 text-center">
+                    Nenhum cliente encontrado.
+                </p>
+
+                <fieldset class="divide-y divide-gray-200">
+                    <legend class="sr-only">Clientes</legend>
+
+                    <div th:each="cliente : ${listaClientes}"
+                         class="relative flex items-start p-4 hover:bg-gray-50">
+                        <div class="min-w-0 flex-1 text-sm leading-6">
+                            <label th:for="'cliente-' + ${cliente.id}"
+                                   class="font-medium text-gray-900 select-none"
+                                   th:text="${cliente.nome}">
+                                Nome do Cliente
+                            </label>
+                            <p th:text="${cliente.email} + ' | ' + ${cliente.telefone}"
+                               class="text-gray-500">
+                                email | telefone
+                            </p>
+                        </div>
+                        <div class="ml-3 flex h-6 items-center">
+                            <input th:id="'cliente-' + ${cliente.id}"
+                                   name="clienteId"
+                                   th:value="${cliente.id}"
+                                   type="radio"
+                                   required="required"
+                                   class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-600">
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+        </div>
+
+        <div class="flex justify-end space-x-4">
+            <a th:href="@{/livros}"
+               class="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg
+                          hover:bg-gray-300 transition">
+                Cancelar
+            </a>
+            <button type="submit"
+                    class="bg-blue-600 text-white py-2 px-4 rounded-lg
+                               hover:bg-blue-700 transition">
+                Confirmar Empréstimo
+            </button>
+        </div>
+    </form>
+</section>
+</body>
+</html>
