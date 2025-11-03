@@ -17,22 +17,27 @@ public class AcervoService {
         return itemAcervoRepository.findAll();
     }
 
-    public ItemAcervo salvar(ItemAcervo itemAcervo){
-        if (itemAcervo.getTitulo() == null || itemAcervo.getTitulo().isEmpty()){
+    public ItemAcervo salvar(ItemAcervo item) {
+        if (item.getTitulo() == null || item.getTitulo().trim().isEmpty()) {
             throw new IllegalArgumentException("O título do item não pode ser nulo ou vazio.");
         }
-        return itemAcervoRepository.save(itemAcervo);
+
+        if (item.getId() == null) {
+            item.setQuantidadeDisponivel(item.getQuantidadeTotal());
+        }
+
+        return itemAcervoRepository.save(item);
     }
 
     public ItemAcervo buscarPorId(Long id) {
         return itemAcervoRepository.findById(id).orElse(null);
     }
 
-    public void deletar(Long id){
+    public void deletar(Long id) {
         itemAcervoRepository.deleteById(id);
     }
 
     public List<ItemAcervo> buscarAcervo(String query) {
-        return  itemAcervoRepository.buscarPorTituloAutorOuIsbn(query);
+        return itemAcervoRepository.buscarPorTituloAutorOuIsbn(query);
     }
 }

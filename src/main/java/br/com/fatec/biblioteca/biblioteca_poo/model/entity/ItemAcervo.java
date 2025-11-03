@@ -12,12 +12,11 @@ public abstract class ItemAcervo {
     private String titulo;
     private String autor;
     private int ano;
-    private boolean estaDisponivel;
-    private String urlCapa;
 
-    public ItemAcervo() {
-        this.estaDisponivel = true;
-    }
+    private int quantidadeTotal;
+    private int quantidadeDisponivel;
+
+    private String urlCapa;
 
     public Long getId() {
         return id;
@@ -51,14 +50,6 @@ public abstract class ItemAcervo {
         this.ano = ano;
     }
 
-    public boolean isEstaDisponivel() {
-        return estaDisponivel;
-    }
-
-    public void setEstaDisponivel(boolean estaDisponivel) {
-        this.estaDisponivel = estaDisponivel;
-    }
-
     public String getUrlCapa() {
         return urlCapa;
     }
@@ -67,4 +58,19 @@ public abstract class ItemAcervo {
         this.urlCapa = urlCapa;
     }
 
+    public int getQuantidadeTotal() {
+        return quantidadeTotal;
+    }
+
+    public void setQuantidadeTotal(int quantidadeTotal) {
+        this.quantidadeTotal = quantidadeTotal;
+    }
+
+    public int getQuantidadeDisponivel() {
+        return quantidadeDisponivel;
+    }
+
+    public void setQuantidadeDisponivel(int quantidadeDisponivel) {
+        this.quantidadeDisponivel = quantidadeDisponivel;
+    }
 }

@@ -27,10 +27,17 @@
                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"/>
         </div>
 
-        <div>
-            <label for="isbn" class="block text-sm font-medium text-gray-700">ISBN</label>
-            <input type="text" id="isbn" th:field="*{isbn}"
-                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"/>
+        <div class="grid grid-cols-2 gap-6">
+            <div>
+                <label for="isbn" class="block text-sm font-medium text-gray-700">ISBN</label>
+                <input type="text" id="isbn" th:field="*{isbn}"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"/>
+            </div>
+            <div>
+                <label for="quantidadeTotal" class="block text-sm font-medium text-gray-700">Quantidade Total</label>
+                <input type="number" id="quantidadeTotal" th:field="*{quantidadeTotal}"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"/>
+            </div>
         </div>
 
         <div>
