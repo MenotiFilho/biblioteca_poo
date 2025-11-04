@@ -2,7 +2,7 @@
 
 ## 1. Introdução
 
-Este projeto foi desenvolvido como avaliação para a disciplina de **Programação Orientada a Objetos (POO)**, do 2º semestre do curso de Análise e Desenvolvimento de Sistemas da **FATEC Arthur de Azevedo - Mococa**, previsto para o primeiro semestre de 2025.
+Este projeto foi desenvolvido como avaliação para a disciplina de **Programação Orientada a Objetos (POO)**, do 4º semestre do curso de Análise e Desenvolvimento de Sistemas da **FATEC - Mococa**.
 
 O objetivo principal é aplicar os conceitos fundamentais da Programação Orientada a Objetos em um projeto prático, construindo um sistema web para o gerenciamento de uma biblioteca. A aplicação permite controlar o acervo de livros, cadastrar clientes e gerenciar empréstimos e devoluções.
 
