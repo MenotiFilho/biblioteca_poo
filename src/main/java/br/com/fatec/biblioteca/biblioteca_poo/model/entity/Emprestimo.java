@@ -3,9 +3,12 @@ package br.com.fatec.biblioteca.biblioteca_poo.model.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 public class Emprestimo {
+
+    private static final double VALOR_MULTA_DIARIA = 0.50;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +25,28 @@ public class Emprestimo {
     private LocalDate dataEmprestimo;
     private LocalDate dataPrevistaDevolucao;
 
-    private LocalDate getDataDevolucao;
+    private LocalDate dataDevolucao;
+
+    public double calcularMulta() {
+        if (dataPrevistaDevolucao == null) {
+            return 0.0;
+        }
+
+        LocalDate dataFinalParaCalculo;
+
+        if (dataDevolucao != null) {
+            dataFinalParaCalculo = dataDevolucao;
+        } else {
+            dataFinalParaCalculo = LocalDate.now();
+        }
+
+        if (dataFinalParaCalculo.isAfter(dataPrevistaDevolucao)) {
+            long diasDeAtraso = ChronoUnit.DAYS.between(dataPrevistaDevolucao, dataFinalParaCalculo);
+            return diasDeAtraso * VALOR_MULTA_DIARIA;
+        }
+
+        return 0.0;
+    }
 
     public Long getId() {
         return id;
@@ -64,11 +88,11 @@ public class Emprestimo {
         this.dataPrevistaDevolucao = dataPrevistaDevolucao;
     }
 
-    public LocalDate getGetDataDevolucao() {
-        return getDataDevolucao;
+    public LocalDate getDataDevolucao() {
+        return dataDevolucao;
     }
 
-    public void setGetDataDevolucao(LocalDate getDataDevolucao) {
-        this.getDataDevolucao = getDataDevolucao;
+    public void setDataDevolucao(LocalDate getDataDevolucao) {
+        this.dataDevolucao = getDataDevolucao;
     }
 }

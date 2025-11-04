@@ -18,6 +18,7 @@ public abstract class ItemAcervo {
 
     private String urlCapa;
 
+
     public Long getId() {
         return id;
     }
@@ -64,6 +65,7 @@ public abstract class ItemAcervo {
 
     public void setQuantidadeTotal(int quantidadeTotal) {
         this.quantidadeTotal = quantidadeTotal;
+        this.quantidadeDisponivel = quantidadeDisponivel + quantidadeTotal;
     }
 
     public int getQuantidadeDisponivel() {

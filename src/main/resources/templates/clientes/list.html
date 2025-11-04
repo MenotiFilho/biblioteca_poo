@@ -7,13 +7,13 @@
 </head>
 
 <body>
-<section class="p-10 flex flex-col">
-    <div class="flex justify-between items-center mb-6">
+<section class="p-10 flex flex-col overflow-y-auto">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <h1 class="text-3xl font-bold">Gerenciamento de Clientes</h1>
 
         <a th:href="@{/clientes/novo}"
            class="bg-blue-600 text-white py-2 px-4 rounded-lg
-                      hover:bg-blue-700 transition">
+                      hover:bg-blue-700 transition w-full sm:w-auto">
             + Adicionar Cliente
         </a>
     </div>
@@ -36,7 +36,7 @@
     </div>
 
     <div id="search-results" th:fragment="tabelaResultados">
-        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="bg-white shadow-md rounded-lg overflow-hidden overflow-x-auto min-w-[800px]">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                 <tr>
@@ -52,16 +52,20 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                 <tr th:each="cliente : ${listaClientes}" class="hover:bg-gray-50">
-                    <td class="py-4 px-6" th:text="${cliente.nome}">Nome do Cliente</td>
-                    <td class="py-4 px-6" th:text="${cliente.email}">email@cliente.com</td>
-                    <td class="py-4 px-6" th:text="${cliente.telefone}">(11) 99999-9999</td>
-                    <td class="py-4 px-6 text-sm font-medium">
+                    <td class="py-4 px-6" th:text="${cliente.nome}"></td>
+                    <td class="py-4 px-6" th:text="${cliente.email}"></td>
+                    <td class="py-4 px-6" th:text="${cliente.telefone}"></td>
+                    <td class="flex gap-5 py-4 px-6 text-sm font-medium">
+                        <a th:href="@{/emprestimos/cliente/{clienteId}(clienteId=${cliente.id})}"
+                           class="text-blue-600 hover:text-blue-900 ml-4">
+                            Histórico
+                        </a>
                         <a th:href="@{/clientes/editar/{id}(id=${cliente.id})}"
                            class="text-indigo-600 hover:text-indigo-900">
                             Editar
                         </a>
                         <a th:href="@{/clientes/deletar/{id}(id=${cliente.id})}"
-                           class="text-red-600 hover:text-red-900 ml-4"
+                           class="text-red-600 hover:text-red-900"
                            onclick="return confirm('Tem certeza que deseja excluir este cliente?');">
                             Excluir
                         </a>
@@ -78,6 +82,6 @@
         </div>
     </div>
 
-<section/>
+</section>
 </body>
 </html>

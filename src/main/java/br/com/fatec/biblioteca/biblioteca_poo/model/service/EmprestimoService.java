@@ -51,4 +51,34 @@ public class EmprestimoService {
     public List<Emprestimo> listaTodos(){
         return emprestimoRepository.findAll();
     }
+    public List<Emprestimo> buscarPorCliente(Long clienteId) {
+        return emprestimoRepository.buscarHistoricoOrdenado(clienteId);
+    }
+
+    @Transactional
+    public Emprestimo realizarDevolucao(Long emprestimoId) {
+        Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
+                .orElseThrow(() -> new IllegalArgumentException("Empréstimo não encontrado."));
+
+        if (emprestimo.getDataDevolucao() != null) {
+            throw new IllegalStateException("Este livro já foi devolvido.");
+        }
+
+        emprestimo.setDataDevolucao(LocalDate.now());
+
+        ItemAcervo item = emprestimo.getItemAcervo();
+        if (item != null) {
+            item.setQuantidadeDisponivel(item.getQuantidadeDisponivel() + 1);
+            acervoService.salvar(item);
+        } else {
+            throw new IllegalStateException("Item do acervo não encontrado para este empréstimo.");
+        }
+
+        return emprestimoRepository.save(emprestimo);
+    }
+
+    public long countEmprestimosAtivos() {
+        return emprestimoRepository.countByDataDevolucaoIsNull();
+    }
+
 }

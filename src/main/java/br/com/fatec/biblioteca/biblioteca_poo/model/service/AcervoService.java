@@ -40,4 +40,8 @@ public class AcervoService {
     public List<ItemAcervo> buscarAcervo(String query) {
         return itemAcervoRepository.buscarPorTituloAutorOuIsbn(query);
     }
+
+    public long countTotalItens() {
+        return itemAcervoRepository.count();
+    }
 }

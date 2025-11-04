@@ -70,4 +70,29 @@ public class EmprestimoController {
 
         return "emprestimos/form :: search-results";
     }
+    @GetMapping("/cliente/{clienteId}")
+    public String mostrarHistoricoCliente(@PathVariable Long clienteId, Model model){
+        Cliente cliente = usuarioService.buscarClientePorId(clienteId);
+        if (cliente == null) {
+            return "redirect:/livros?error=Cliente não encontrado";
+        }
+        model.addAttribute("cliente", cliente);
+        model.addAttribute("listaEmprestimos", emprestimoService.buscarPorCliente(clienteId));
+
+        return  "emprestimos/list-por-cliente";
+    }
+    @PostMapping("/devolver")
+    public String realizarDevolucao(@RequestParam Long emprestimoId,
+                                    @RequestParam Long clienteId,
+                                    RedirectAttributes redirectAttributes) {
+
+        try {
+            emprestimoService.realizarDevolucao(emprestimoId);
+            redirectAttributes.addFlashAttribute("mensagemSucesso", "Devolução registrada com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao devolver: " + e.getMessage());
+        }
+
+        return "redirect:/emprestimos/cliente/" + clienteId;
+    }
 }

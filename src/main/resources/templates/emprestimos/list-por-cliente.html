@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(title=~{::title}, content=~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="'Histórico de ' + ${cliente.nome}">Histórico do Cliente</title>
+</head>
+
+<body>
+<section class="p-10 flex flex-col overflow-y-auto">
+
+    <div th:if="${mensagemSucesso}"
+         class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-5"
+         role="alert">
+        <span class="block sm:inline" th:text="${mensagemSucesso}"></span>
+    </div>
+    <div th:if="${mensagemErro}"
+         class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-5"
+         role="alert">
+        <span class="block sm:inline" th:text="${mensagemErro}"></span>
+    </div>
+
+    <div class="mb-6 bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold" th:text="${cliente.nome}">Nome do Cliente</h1>
+        <p class="text-gray-600" th:text="${cliente.email}">email@cliente.com</p>
+        <p class="text-gray-600" th:text="${cliente.telefone}">(11) 99999-9999</p>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg overflow-hidden overflow-x-auto min-w-[800px]">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+                <th class="py-3 px-6 text-left">Livro</th>
+                <th class="py-3 px-6 text-left">Data Empréstimo</th>
+                <th class="py-3 px-6 text-left">Data Prevista</th>
+                <th class="py-3 px-6 text-left">Data Devolução</th>
+                <th class="py-3 px-6 text-left">Multa</th>
+                <th class="py-3 px-6 text-left">Ações</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+
+            <tr th:each="emp : ${listaEmprestimos}" class="hover:bg-gray-50">
+                <td class="py-4 px-6" th:text="${emp.itemAcervo.titulo}"></td>
+                <td class="py-4 px-6" th:text="${#temporals.format(emp.dataEmprestimo, 'dd/MM/yyyy')}"></td>
+                <td class="py-4 px-6" th:text="${#temporals.format(emp.dataPrevistaDevolucao, 'dd/MM/yyyy')}"></td>
+
+                <td class="py-4 px-6">
+                    <span th:if="${emp.dataDevolucao != null}"
+                          th:text="${#temporals.format(emp.dataDevolucao, 'dd/MM/yyyy')}">
+                    </span>
+                    <span th:unless="${emp.dataDevolucao != null}"
+                          class="text-xs font-medium px-2.5 py-0.5 rounded-full
+                                 bg-yellow-100 text-yellow-800">
+                        ATIVO
+                    </span>
+                </td>
+
+                <td class="py-4 px-6">
+                    <span th:text="'R$ ' + ${#numbers.formatDecimal(emp.calcularMulta(), 1, 2, 'COMMA')}"
+                          th:classappend="${emp.calcularMulta() > 0 ? 'text-red-600 font-bold' : ''}">
+                        R$ 0,00
+                    </span>
+                </td>
+
+                <td class="py-4 px-6">
+                    <form th:if="${emp.dataDevolucao == null}"
+                          th:action="@{/emprestimos/devolver}" method="POST"
+                          onsubmit="return confirm('Confirmar a devolução deste item?');">
+
+                        <input type="hidden" name="emprestimoId" th:value="${emp.id}" />
+                        <input type="hidden" name="clienteId" th:value="${cliente.id}" />
+
+                        <button type="submit"
+                                class="text-green-600 hover:text-green-900 text-sm font-medium">
+                            Devolver
+                        </button>
+                    </form>
+                </td>
+            </tr>
+
+            <tr th:if="${listaEmprestimos.isEmpty()}">
+                <td colspan="6" class="py-4 px-6 text-center text-gray-500">
+                    Nenhum empréstimo registrado para este cliente.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

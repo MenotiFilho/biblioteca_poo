@@ -40,4 +40,8 @@ public class UsuarioService {
         return clienteRepository.buscarClientePorMultiplosCampos(query);
     }
 
+    public long countTotalClientes() {
+        return clienteRepository.count();
+    }
+
 }

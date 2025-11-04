@@ -7,17 +7,26 @@
 </head>
 
 <body>
-<section>
+<section class="p-10 flex flex-col">
     <h1 class="text-3xl font-bold mb-6">Realizar Empréstimo</h1>
 
     <form th:action="@{/emprestimos/realizar}" method="POST"
           class="bg-white p-8 rounded-lg shadow-md space-y-6">
 
-        <div class="border-b pb-4 mb-4">
-            <h2 class="text-lg font-semibold text-gray-700">Livro Selecionado</h2>
-            <p class="text-xl" th:text="${item.titulo}">1984</p>
-            <p class="text-gray-500" th:text="${item.autor}">George Orwell</p>
-
+        <div class="flex justify-between space-between border-b pb-4 mb-4 w-full">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-700">Livro Selecionado</h2>
+                <p class="text-xl" th:text="${item.titulo}">1984</p>
+                <p class="text-gray-500" th:text="${item.autor}">George Orwell</p>
+            </div>
+            <img th:if="${item.urlCapa != null AND !item.urlCapa.isEmpty()}"
+                     th:src="${item.urlCapa}"
+                     alt="Capa do livro"
+                     class="h-24 w-18 object-cover rounded-sm shadow"/>
+            <span th:unless="${item.urlCapa != null AND !item.urlCapa.isEmpty()}"
+                      class="text-xs text-gray-400">
+                            Sem Imagem
+            </span>
             <input type="hidden" name="itemId" th:value="${item.id}" />
         </div>
 
