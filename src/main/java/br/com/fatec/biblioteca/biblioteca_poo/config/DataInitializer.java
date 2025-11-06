@@ -9,14 +9,15 @@ import br.com.fatec.biblioteca.biblioteca_poo.model.repository.ClienteRepository
 import br.com.fatec.biblioteca.biblioteca_poo.model.repository.EmprestimoRepository;
 import br.com.fatec.biblioteca.biblioteca_poo.model.repository.ItemAcervoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Component
-public class DataInitializer implements CommandLineRunner {
+public class DataInitializer { // Não precisa mais do 'implements CommandLineRunner'
 
     @Autowired
     private BibliotecarioRepository bibliotecarioRepository;
@@ -27,12 +28,14 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    // NOVO: Adicionar o Repository de Empréstimos
     @Autowired
     private EmprestimoRepository emprestimoRepository;
 
-    @Override
-    public void run(String... args) throws Exception {
+    @EventListener(ContextRefreshedEvent.class) // Isso dispara DEPOIS que o banco está pronto
+    public void run() { // Renomeado para 'run' sem argumentos
+
+        // Se a aplicação tiver um erro de permissão (AccessDeniedException),
+        // ele vai aparecer aqui, mas isso só deve ocorrer se o Render não tiver a pasta /data
 
         // --- 1. ADMIN ---
         if (bibliotecarioRepository.findByLogin("admin").isEmpty()) {
@@ -43,8 +46,11 @@ public class DataInitializer implements CommandLineRunner {
             bibliotecarioRepository.save(admin);
         }
 
+        // As lógicas abaixo usam os objetos recém-criados, por isso devem estar aqui dentro
+        // do bloco @EventListener.
+
         // --- 2. CLIENTES ---
-        List<Cliente> clientes = List.of(); // Inicializa lista para usar depois
+        List<Cliente> clientes = List.of();
         if (clienteRepository.count() == 0) {
             Cliente c1 = new Cliente();
             c1.setNome("João da Silva");
@@ -73,12 +79,11 @@ public class DataInitializer implements CommandLineRunner {
 
             clientes = clienteRepository.saveAll(List.of(c1, c2, c3, c4, c5));
         } else {
-            // Se já existirem, apenas os carrega para usar nos empréstimos
             clientes = clienteRepository.findAll();
         }
 
         // --- 3. LIVROS ---
-        List<LivroFisico> livros = List.of(); // Inicializa lista para usar depois
+        List<LivroFisico> livros = List.of();
         if (itemAcervoRepository.count() == 0) {
 
             LivroFisico l1 = new LivroFisico();
@@ -155,7 +160,6 @@ public class DataInitializer implements CommandLineRunner {
 
             livros = itemAcervoRepository.saveAll(List.of(l1, l2, l3, l4, l5, l6, l7, l8, l9, l10));
         } else {
-            // Se já existirem, apenas os carrega para usar nos empréstimos
             livros = itemAcervoRepository.findAll().stream()
                     .filter(l -> l instanceof LivroFisico)
                     .map(l -> (LivroFisico) l)
@@ -165,36 +169,39 @@ public class DataInitializer implements CommandLineRunner {
         // --- 4. EMPRÉSTIMOS ---
         if (emprestimoRepository.count() == 0 && !livros.isEmpty() && !clientes.isEmpty()) {
 
-            // Empréstimo ATIVO (o livro l1 terá a quantidade disponível reduzida em 1)
+            LivroFisico livro1984 = livros.get(0);
+            LivroFisico livroMundoNovo = livros.get(2);
+
+            // Empréstimo ATIVO
             Emprestimo empAtivo = new Emprestimo();
-            empAtivo.setCliente(clientes.get(0)); // João da Silva
-            empAtivo.setItemAcervo(livros.get(0)); // 1984
-            empAtivo.setDataEmprestimo(LocalDate.now().minusDays(3)); // Empréstimo de 3 dias atrás
-            empAtivo.setDataPrevistaDevolucao(LocalDate.now().plusDays(11)); // Vence daqui a 11 dias
+            empAtivo.setCliente(clientes.get(0));
+            empAtivo.setItemAcervo(livro1984);
+            empAtivo.setDataEmprestimo(LocalDate.now().minusDays(3));
+            empAtivo.setDataPrevistaDevolucao(LocalDate.now().plusDays(11));
 
-            // Empréstimo DEVOLVIDO (o livro l2 terá a quantidade normal)
+            // Empréstimo DEVOLVIDO
             Emprestimo empDevolvido = new Emprestimo();
-            empDevolvido.setCliente(clientes.get(1)); // Maria Oliveira
-            empDevolvido.setItemAcervo(livros.get(1)); // O Senhor dos Anéis
+            empDevolvido.setCliente(clientes.get(1));
+            empDevolvido.setItemAcervo(livros.get(1));
             empDevolvido.setDataEmprestimo(LocalDate.now().minusDays(30));
-            empDevolvido.setDataPrevistaDevolucao(LocalDate.now().minusDays(16)); // Venceu há 16 dias
-            empDevolvido.setDataDevolucao(LocalDate.now().minusDays(10)); // Devolvido 10 dias atrás (5 dias de atraso)
+            empDevolvido.setDataPrevistaDevolucao(LocalDate.now().minusDays(16));
+            empDevolvido.setDataDevolucao(LocalDate.now().minusDays(10));
 
-            // Empréstimo ATIVO e ATRASADO (o livro l3 terá a quantidade reduzida em 1)
+            // Empréstimo ATRASADO (para teste de multa)
             Emprestimo empAtrasado = new Emprestimo();
-            empAtrasado.setCliente(clientes.get(2)); // Carlos Pereira
-            empAtrasado.setItemAcervo(livros.get(2)); // Admirável Mundo Novo
+            empAtrasado.setCliente(clientes.get(2));
+            empAtrasado.setItemAcervo(livroMundoNovo);
             empAtrasado.setDataEmprestimo(LocalDate.now().minusDays(20));
-            empAtrasado.setDataPrevistaDevolucao(LocalDate.now().minusDays(6)); // Venceu há 6 dias
+            empAtrasado.setDataPrevistaDevolucao(LocalDate.now().minusDays(6));
 
-            // Simulando a redução de quantidade no Acervo APÓS salvar os empréstimos
+            // Simular a redução de estoque para os livros ativos (manual, pois o save não está no service)
             // Se o livro ainda não foi devolvido, reduzimos a quantidade disponível.
-            livros.get(0).setQuantidadeDisponivel(livros.get(0).getQuantidadeDisponivel() - 1); // 1984
-            livros.get(2).setQuantidadeDisponivel(livros.get(2).getQuantidadeDisponivel() - 1); // Admirável Mundo Novo
+            livro1984.setQuantidadeDisponivel(livro1984.getQuantidadeDisponivel() - 1);
+            livroMundoNovo.setQuantidadeDisponivel(livroMundoNovo.getQuantidadeDisponivel() - 1);
 
             // Salva os empréstimos e atualiza os livros com o novo estoque
             emprestimoRepository.saveAll(List.of(empAtivo, empDevolvido, empAtrasado));
-            itemAcervoRepository.saveAll(List.of(livros.get(0), livros.get(2)));
+            itemAcervoRepository.saveAll(List.of(livro1984, livroMundoNovo));
         }
     }
 }
