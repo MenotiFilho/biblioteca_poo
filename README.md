@@ -25,7 +25,7 @@ A camada de **Serviços** (`EmprestimoService`, `AcervoService`, etc.) abstrai a
 
 O sistema conta com os seguintes módulos:
 
-1.  **Dashboard (RF06):**
+1.  **Dashboard:**
     *   Página inicial que apresenta um resumo estatístico da biblioteca:
         *   Total de clientes cadastrados.
         *   Total de títulos no acervo.
